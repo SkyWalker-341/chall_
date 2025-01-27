@@ -19,7 +19,8 @@ These levels provide foundational tasks to familiarize participants with basic n
 ### Level 4 (Hulk)
 
 - **Protocol:** SMTP
-- **Task:** Analyze email traffic to extract a clue or password embedded in the message body or headers.
+- **Task:** This challenge involves creating and manipulating SMTP packets within a `.pcap` file, where packets can be "hidden" by altering their timestamps. Participants must reverse the timestamp modifications to uncover hidden messages.
+
 
 ### Level 5 (Thor)
 
@@ -55,8 +56,3 @@ Capture this interaction in a `.pcap` file for analysis in Wireshark.
 - **Task:** Combine passwords from specific levels (e.g., Level 2 and Level 6).
 - **Hashing:** Concatenate the passwords, hash them using a specific algorithm (e.g., SHA-256), and use the hash as the password for the Watcher account.
 
-## Notes
-
-- Ensure each `.pcap` file is realistic and matches the described protocol.
-- Provide subtle hints for each level to guide participants while maintaining difficulty.
-- Emphasize analysis skills using Wireshark, Scapy, and other networking tools.
