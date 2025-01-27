@@ -12,10 +12,22 @@ The password for Watcher is a hash derived from the combination of two passwords
 
 ## Level Details
 
-### Level 1 to Level 3
+### Level 1
 
-These levels provide foundational tasks to familiarize participants with basic network analysis and packet crafting.
+- **Protocol:** ICMP
+- **Task:** Sending an individual ICMP packet for each character
 
+### Level 2
+
+- **Protocol:** FTP
+- **Task:** The file send througth FTP and flag is encrypted 
+
+### Level 3 
+
+- **Protocol:** HTTP 
+- **Task:** The proper HTTP protocol format. In HTTP, a client sends a request to a server, and the server responds with a response
+
+  
 ### Level 4 (Hulk)
 
 - **Protocol:** SMTP
@@ -43,16 +55,16 @@ Capture this interaction in a `.pcap` file for analysis in Wireshark.
 
 ### Level 6 (Iron Man)
 
-- **Protocol:** TBD (can implement based on a unique mechanism, e.g., file transfer or HTTP interactions).
-- **Task:** Requires analyzing or interacting with the network to uncover the password.
+- **Protocol:** SBM
+- **Task:** The SMB package are encrypted to decrypted the packages you need session ID and Session key but there are multip Session ID was there and SMB contains a pasword and a encrypted key-log file 
 
 ### Level 7 (Captain America)
 
 - **Protocol:** Encrypted TCP (AES encryption)
-- **Task:** Analyze encrypted TCP traffic to decrypt the content using a provided key or to uncover the encryption key within the traffic.
+- **Task:** Analyze encrypted TCP traffic to decrypt the content using a key-log file which you uncover in SMB. the encryption tcp contains a encrypted password and a binary file. To get the original password reverse the binary file and get the password 
 
 ### Final Level (Watcher - Level 8)
 
 - **Task:** Combine passwords from specific levels (e.g., Level 2 and Level 6).
-- **Hashing:** Concatenate the passwords, hash them using a specific algorithm (e.g., SHA-256), and use the hash as the password for the Watcher account.
+- **Hashing:** Concatenate the passwords, hash them using a specific algorithm (e.g., SHA-256), and use the hash as the password for the Watcher account (hashing format is iron-password_thor-password)only the password need to be hashing.
 
