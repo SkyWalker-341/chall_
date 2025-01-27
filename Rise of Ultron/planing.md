@@ -39,20 +39,6 @@ The password for Watcher is a hash derived from the combination of two passwords
 - **Protocol:** DNS
 - **Task:** Participants analyze DNS traffic to find a clue or password embedded in DNS query or response packets.
 
-#### Implementation Idea for DNS
-
-- Use a DNS query to `google.com` to simulate realistic traffic.
-- Embed the password within a custom DNS response:
-  - The DNS Name Header includes a hint or keyword, e.g., `exestr-clowns`.
-  - The DNS Answer Section contains the password value (e.g., `Thor-password=ABC123!`).
-
-Capture this interaction in a `.pcap` file for analysis in Wireshark.
-
-#### Example of the DNS traffic:
-
-- **Query:** `google.com` (simulated).
-- **Response:** DNS Answer with `exestr-clowns.google.com` and `Thor-password=ABC123!` in the data.
-
 ### Level 6 (Iron Man)
 
 - **Protocol:** SBM
