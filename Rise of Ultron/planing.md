@@ -41,7 +41,7 @@ The password for Watcher is a hash derived from the combination of two passwords
 
 ### Level 6 (Iron Man)
 
-- **Protocol:** SBM
+- **Protocol:** SMB
 - **Task:** The SMB package are encrypted to decrypted the packages you need session ID and Session key but there are multip Session ID was there and SMB contains a pasword and a encrypted key-log file 
 
 ### Level 7 (Captain America)
