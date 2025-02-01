@@ -1,4 +1,4 @@
-# Android Forensic CTF Challenge
+# Phantom Droid Challenge
 
 ## Challenge Overview
 An Android application was installed on a test device. The app encrypted user data, reset the device password, and then deleted itself from the system.
