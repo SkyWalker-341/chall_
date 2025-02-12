@@ -79,14 +79,33 @@
 //     return 0;
 // }
 
-
-
- #include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/mman.h>
+#include <signal.h>
+#include <string.h>
 
-#define KEY_SIZE 64  // Adjust as needed
+#define KEY_SIZE 64  
+char *key_buffer = NULL;
+
+void handle_sigterm(int signum) {
+    printf("\nProcess killed! Revealing the key...\n");
+
+    // Restore memory access
+    mprotect(key_buffer, KEY_SIZE, PROT_READ | PROT_WRITE);
+
+    // Print the key
+    printf("Secret Key: %s\n", key_buffer);
+
+    // Clear memory before exit
+    memset(key_buffer, 0, KEY_SIZE);
+    munlock(key_buffer, KEY_SIZE);
+    free(key_buffer);
+    
+    exit(0);
+}
 
 int main(void) {
     int fd = open(".key.key", O_RDONLY);
@@ -96,8 +115,14 @@ int main(void) {
     }
 
     // Allocate a buffer for the key
-    char key_buffer[KEY_SIZE + 1] = {0}; // +1 for null terminator
+    key_buffer = (char *)malloc(KEY_SIZE);
+    if (!key_buffer) {
+        perror("malloc");
+        close(fd);
+        exit(EXIT_FAILURE);
+    }
 
+    // Read the key into memory
     ssize_t bytes_read = read(fd, key_buffer, KEY_SIZE);
     if (bytes_read < 0) {
         perror("read");
@@ -105,22 +130,26 @@ int main(void) {
         exit(EXIT_FAILURE);
     }
 
-    // Unlink (remove) the file immediately after reading it
+    // Unlink (remove) the file
     if (unlink(".key.key") != 0) {
         perror("unlink");
-        // You might still decide to continue if unlink fails,
-        // but it's best to ensure the file is removed.
     }
 
-    // Now the key is only in memory (key_buffer) and not on disk.
     printf("Key loaded into memory and file removed.\n");
 
-    /* 
-       Continue with your process logic here, e.g., locking the memory,
-       setting proper protections, etc.
-    */
+    // Lock the key in memory to prevent swapping
+    if (mlock(key_buffer, KEY_SIZE) != 0) {
+        perror("mlock");
+    }
 
-    // For demonstration, we'll just sleep
+    // Protect memory so it can't be read until process is killed
+    mprotect(key_buffer, KEY_SIZE, PROT_NONE);
+
+    // Set up a signal handler to reveal the key on termination
+    signal(SIGTERM, handle_sigterm);
+    signal(SIGINT, handle_sigterm);
+
+    // Keep the process running
     while (1) {
         sleep(1);
     }
@@ -128,4 +157,3 @@ int main(void) {
     close(fd);
     return 0;
 }
-
