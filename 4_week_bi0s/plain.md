@@ -31,10 +31,7 @@
 
 ## Lab 4: SSH Tunneling & FTP Setup
 ### Tasks:
-1. **Host-Only Adapter in VirtualBox** - Setting up networking between host and guest VM.
-2. **File Transfer via SCP** - Observing differences between `scp` and `nc`.
-3. **SSH Port Forwarding** - Encrypting HTTP traffic using SSH tunnels.
-4. **FTP Setup with vsftpd** - Configuring an FTP server and capturing unencrypted/encrypted traffic.
+1. **FTP Setup with vsftpd** - Configuring an FTP server and capturing unencrypted/encrypted traffic.
 
 **Some challenge**
 
