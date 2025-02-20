@@ -31,9 +31,10 @@
 
 ## Lab 5: Advanced Linux & Encryption
 ### Tasks:
-1. **Linux Terminal Commands** - Process listing, socket analysis, filesystem queries.
-2. **Disk Image Handling** - Mounting, modifying, and extracting data from disk images.
-3. **GPG Encryption & Email Security** - Generating GPG keys and securing emails.
+1. **Bandit Wargame (Level 15-31)** - Advanced Linux exercises.
+2. **Linux Terminal Commands** - Process listing, socket analysis, filesystem queries.
+3. **Disk Image Handling** - Mounting, modifying, and extracting data from disk images using a script.
+4. Some Networking challenge 
 
 
 ## Note on SSH and Netcat Communication
@@ -42,3 +43,17 @@ SSH provides secure encrypted communication between hosts, ensuring that all tra
 Netcat (`nc`), on the other hand, transmits data in plaintext unless secured via SSH tunneling or an external encryption method. When analyzing Netcat traffic in Wireshark, unencrypted messages are visible, but encrypted transmissions appear as unreadable cipher text. Capturing and comparing both protocols in Wireshark helps demonstrate the importance of encryption in secure communications.
 
 If Netcat is used for encryption, it is necessary to provide the corresponding decryption method. In SSH, the encryption is typically performed using algorithms like AES or ChaCha20, and decryption occurs automatically on the recipient's end using the negotiated session key. To analyze SSH traffic in Wireshark, one would need the private key to decrypt the captured packets. Without access to this key, decrypting SSH packets is practically infeasible due to strong encryption mechanisms in place. Therefore, when working with Netcat encryption, submitting the decryption method is essential to verify the integrity and security of the communication.
+
+
+## Suggested Resources
+- [Linux Command Handbook](https://devhints.io/linux) 
+- [Wireshark User Guide](https://www.wireshark.org/docs/wsug_html_chunked/) 
+- [Wireshark Cheat Sheet](https://www.stationx.net/wireshark-cheat-sheet/) 
+- [tshark Manual](https://www.wireshark.org/docs/man-pages/tshark.html) 
+- [List of File Signatures](https://www.garykessler.net/library/file_sigs.html) 
+- [ExifTool Documentation](https://exiftool.org/) .
+- [Binwalk for Firmware Analysis](https://github.com/ReFirmLabs/binwalk) 
+- [GPG Guide](https://www.gnupg.org/documentation/manuals/gnupg/) 
+- [SSH Essentials](https://www.ssh.com/academy/) 
+- [Netcat Tutorial](https://linux.die.net/man/1/nc) 
+- [Python Socket Programming](https://realpython.com/python-sockets/) 
