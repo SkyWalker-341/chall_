@@ -29,7 +29,7 @@
 
 **Some challenge**
 
-## Lab 4: SSH Tunneling & FTP Setup
+## Lab 4: FTP Setup
 ### Tasks:
 1. **FTP Setup with vsftpd** - Configuring an FTP server and capturing unencrypted/encrypted traffic.
 
@@ -62,7 +62,5 @@ If Netcat is used for encryption, it is necessary to provide the corresponding d
 - [Binwalk for Firmware Analysis](https://wiki.bi0s.in/steganography/binwalk/) 
 - [GPG Guide](https://www.devdungeon.com/content/gpg-tutorial) 
 - [SSH Essentials](https://zah.uni-heidelberg.de/it-guide/ssh-tutorial-linux)
-- [SSH Port Forwarding](https://datawookie.dev/blog/2023/12/ssh-tunnel-remote-port-forwarding/)
 - [Netcat Tutorial](https://nooblinux.com/how-to-use-netcat/) 
-- [Netcat Port Forwarding](https://gist.github.com/kapil1024/15095f97fe945040806bfdf0fc153fea)
    
