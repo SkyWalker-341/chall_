@@ -10,6 +10,7 @@
 6. **Extracting Embedded Files** - Identifying hidden ZIP files inside images using `hexedit` and `binwalk`.
 7. **File Encryption & Decryption** - Using GPG for symmetric encryption.
 8. **SSH Configuration & Login** - Connecting to a guest VM via SSH and modifying port settings.
+   
 **Some challenge**
 
 ## Lab 2: Wireshark & Network Traffic Analysis
@@ -17,6 +18,7 @@
 1. **Wireshark Tutorial** - Capturing and analyzing TCP and HTTP traffic.
 2. **TCP Chat Program** - Writing a chat server-client in C/Python and analyzing traffic using `tcpdump`.
 3. **Netcat Chat Analysis** - Using `nc` for communication and filtering traffic with Wireshark.
+
 **Some challenge**
 
 ## Lab 3: Network Traffic Analysis with tshark
@@ -24,6 +26,7 @@
 1. **File Signature Analysis** - Using `nc` to transfer executables and recover them from PCAP using `tshark`.
 2. **Python HTTP Server Traffic Capture** - Hosting a file server and extracting transferred files from traffic.
 3. **ICMP Packet Capture** - Sending roll number via `ping` and analyzing traffic with `tshark`.
+
 **Some challenge**
 
 ## Lab 4: SSH Tunneling & FTP Setup
@@ -32,6 +35,7 @@
 2. **File Transfer via SCP** - Observing differences between `scp` and `nc`.
 3. **SSH Port Forwarding** - Encrypting HTTP traffic using SSH tunnels.
 4. **FTP Setup with vsftpd** - Configuring an FTP server and capturing unencrypted/encrypted traffic.
+
 **Some challenge**
 
 ## Lab 5: Advanced Linux & Encryption
@@ -39,8 +43,8 @@
 1. **Bandit Wargame (Level 15-31)** - Advanced Linux exercises.
 2. **Linux Terminal Commands** - Process listing, socket analysis, filesystem queries.
 3. **Disk Image Handling** - Mounting, modifying, and extracting data from disk images using a script.
-**Some challenge** 
 
+**Some challenge** 
 
 ## Note on SSH and Netcat Communication
 SSH provides secure encrypted communication between hosts, ensuring that all transmitted data remains confidential. When capturing SSH traffic in Wireshark, packets appear as encrypted blobs, making it impossible to directly view the data. 
