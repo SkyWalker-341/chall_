@@ -1,6 +1,11 @@
 # Lab Summary
 
-## Lab 1: Basic Linux & File Analysis
+## Lab 1: Wireshark-LAB
+### Tasks:
+1. HTTP,UDP,TCP -> Lab.
+2. Socket programining.
+   
+## Lab 2: Basic Linux & File Analysis
 ### Tasks:
 1. Learn the OSI Model and their functionality:ipv4 and ipv6.  
 2. **File Identification** - Extracting and analyzing file properties using `file`, `sha256sum`, `md5sum`, and `readelf`.
@@ -10,7 +15,7 @@
 6. **File Encryption & Decryption** - GPG,openssl
 **Some challenge**
 
-## Lab 2: Wireshark & Network Traffic Analysis
+## Lab 3: Wireshark & Network Traffic Analysis
 ### Tasks:
 1. **Wireshark Tutorial** - Capturing and analyzing TCP and HTTP traffic.
 2. **TCP Chat Program** - Writing a chat server-client in C/Python and analyzing traffic using `tcpdump`.
@@ -20,7 +25,7 @@
 6. **learn about Introduction Scapy ** 
 **Some challenge**
 
-## Lab 3: Advanced Linux & Encryption
+## Lab 4: Advanced Linux & Encryption
 ### Tasks:
 1. **Bandit Wargame (Level 15-31)** - Advanced Linux exercises.
 2. **Linux Terminal Commands** - Process listing, socket analysis, filesystem queries.
