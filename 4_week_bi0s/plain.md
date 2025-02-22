@@ -6,8 +6,8 @@
 2. **Installing a Virtual Machine** - Setting up a Linux VM and checking IP address.
 3. **File Identification** - Extracting and analyzing file properties using `file`, `sha256sum`, `md5sum`, and `readelf`.
 4. **Image Metadata Analysis** - Extracting geolocation data from an image using `exiftool`.
-5. **Fixing Corrupt PNG Files** - Using hex editors to repair PNG file signatures.
-6. **Extracting Embedded Files** - Identifying hidden ZIP files inside images using `hexedit` and `binwalk`.
+5. **Fixing Corrupt Files** - Using hex editors to repair file.
+6. **Extracting Embedded Files** - Identifying hidden files inside images using `hexedit` and `binwalk`.
 7. **File Encryption & Decryption** - Using GPG for symmetric encryption.
 8. **SSH Configuration & Login** - Connecting to a guest VM via SSH and modifying port settings.
    
@@ -18,21 +18,10 @@
 1. **Wireshark Tutorial** - Capturing and analyzing TCP and HTTP traffic.
 2. **TCP Chat Program** - Writing a chat server-client in C/Python and analyzing traffic using `tcpdump`.
 3. **Netcat Chat Analysis** - Using `nc` for communication and filtering traffic with Wireshark.
-
-**Some challenge**
-
-## Lab 3: Network Traffic Analysis with tshark
-### Tasks:
-1. **File Signature Analysis** - Using `nc` to transfer executables and recover them from PCAP using `tshark`.
-2. **Python HTTP Server Traffic Capture** - Hosting a file server and extracting transferred files from traffic.
-3. **ICMP Packet Capture** - Sending roll number via `ping` and analyzing traffic with `tshark`.
-
-**Some challenge**
-
-## Lab 4: FTP Setup
-### Tasks:
-1. **FTP Setup with vsftpd** - Configuring an FTP server and capturing unencrypted/encrypted traffic.
-
+4. **File Signature Analysis** - Using `nc` to transfer executables and recover them from PCAP using `tshark`.
+5. **Python HTTP Server Traffic Capture** - Hosting a file server and extracting transferred files from traffic.
+6. **ICMP Packet Capture** - Sending roll number via `ping` and analyzing traffic with `tshark`.
+7. **FTP Setup with vsftpd** - Configuring an FTP server and capturing unencrypted/encrypted traffic.
 **Some challenge**
 
 ## Lab 5: Advanced Linux & Encryption
@@ -40,6 +29,7 @@
 1. **Bandit Wargame (Level 15-31)** - Advanced Linux exercises.
 2. **Linux Terminal Commands** - Process listing, socket analysis, filesystem queries.
 3. **Disk Image Handling** - Mounting, modifying, and extracting data from disk images using a script.
+4. **mem
 
 **Some challenge** 
 
