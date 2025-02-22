@@ -15,7 +15,7 @@
 6. **File Encryption & Decryption** - GPG,openssl
 **Some challenge**
 
-## Lab 3: Wireshark & Network Traffic Analysis
+## Lab 3: Wireshark  Network Traffic Analysis
 ### Tasks:
 1. **Wireshark Tutorial** - Capturing and analyzing TCP and HTTP traffic.
 2. **Netcat Chat Analysis** - Using `nc` for communication and filtering traffic with Wireshark.
