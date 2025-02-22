@@ -18,19 +18,15 @@
 ## Lab 3: Wireshark & Network Traffic Analysis
 ### Tasks:
 1. **Wireshark Tutorial** - Capturing and analyzing TCP and HTTP traffic.
-2. **TCP Chat Program** - Writing a chat server-client in C/Python and analyzing traffic using `tcpdump`.
-3. **Netcat Chat Analysis** - Using `nc` for communication and filtering traffic with Wireshark.
-4. **File Signature Analysis** - Using `nc` to transfer executables and recover them from PCAP using `tshark`.
-5. **Python HTTP Server Traffic Capture** - Hosting a file server and extracting transferred files from traffic.
-6. **learn about Introduction Scapy ** 
-**Some challenge**
+2. **Netcat Chat Analysis** - Using `nc` for communication and filtering traffic with Wireshark.
+3. **Reverse Shell** - using `nc` implement Reverse shell
+4. **SSh tunneling** - Expose Your Local Web Server to a Remote Machine (Remote Port Forwarding)
 
 ## Lab 4: Advanced Linux & Encryption
 ### Tasks:
 1. **Bandit Wargame (Level 15-31)** - Advanced Linux exercises.
-2. **Linux Terminal Commands** - Process listing, socket analysis, filesystem queries.
-3. **Disk Image Handling** - Mounting, modifying, and extracting data from disk images using a script.
-4. **Disk image analysis** -  parition,file-system,slackspace.
+2. **Disk Image Handling** - Mounting, modifying, and extracting data from disk images using a script and use dd command  .
+3. **Disk image analysis** -  parition,file-system,slackspace.
 **Some challenge** 
 
 ## Suggested Resources
