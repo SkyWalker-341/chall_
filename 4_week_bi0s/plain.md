@@ -9,10 +9,9 @@
 ### Tasks:
 1. Learn the OSI Model and their functionality:ipv4 and ipv6.  
 2. **File Identification** - Extracting and analyzing file properties using `file`, `sha256sum`, `md5sum`, and `readelf`.
-3. **Image Metadata Analysis** - Extracting geolocation data from an image using `exiftool`.
-4. **Fixing Corrupt Files** - Using hex editors to repair file.
-5. **Extracting Embedded Files** - Identifying hidden files inside images using `hexedit` and `binwalk`.
-6. **File Encryption & Decryption** - GPG,openssl
+3. **Fixing Corrupt Files** - Using hex editors to repair file.
+4. **Extracting Embedded Files** - Identifying hidden files inside images using `hexedit` and `binwalk`.
+5. **File Encryption & Decryption** - GPG,openssl
 **Some challenge**
 
 ## Lab 3: Wireshark  Network Traffic Analysis
