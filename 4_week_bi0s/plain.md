@@ -10,7 +10,7 @@
 1. **File Identification** - Extracting and analyzing file properties using `file`, `sha256sum`, `md5sum`, and `readelf`.
 2. **Fixing Corrupt Files** - Using hex editors to repair file.
 3. **Extracting Embedded Files** - Identifying hidden files inside images using `hexedit` and `binwalk`.
-4. **File Encryption & Decryption** - GPG,openssl
+4. **File Encryption & Decryption** - GPG,openssl,XOR
 
 challegen : 
 1) [verify](https://play.picoctf.org/practice/challenge/450?category=4&originalEvent=73&page=1)
