@@ -14,7 +14,6 @@
 
 challegen : 
 1) [verify](https://play.picoctf.org/practice/challenge/450?category=4&originalEvent=73&page=1)
-2) 
 
 ## Lab 3: Wireshark  Network Traffic Analysis
 ### Tasks:
