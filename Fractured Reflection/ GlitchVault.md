@@ -8,6 +8,7 @@ The pieces are there, but not where they belong. Patterns have been disrupted, s
 
 1. **Cracking the ZIP Password**  
    We have a ZIP file named `challegen.zip` that is password protected. Since the password is unknown, use a brute-force approach with the `rockyou.txt` wordlist. Tools like fcracker or John the Ripper can be utilized to recover the password.
+
 Password : ```katerine_orrego123@hotmail.com```
 
 2. **Extracting the Files**  
