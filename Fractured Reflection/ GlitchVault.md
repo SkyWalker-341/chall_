@@ -97,7 +97,7 @@ with open("flag.png", "wb") as f:
 ```
    - Finally, convert the hexadecimal data into raw binary data.
 
-![Screenshot from 2025-03-07 20-22-59](https://github.com/user-attachments/assets/64c359c8-c2f6-4c00-89db-f3f508bb4fc8)
+![Screenshot from 2025-03-08 18-55-32](https://github.com/user-attachments/assets/ce66db6f-b5a4-45f9-acf5-9699ead2172f)
 
 The resulting image will reveal the flag.
 
