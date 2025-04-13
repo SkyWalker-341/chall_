@@ -143,3 +143,58 @@ if __name__ == "__main__":
     main()
 
 ```
+
+
+### 2 
+
+import os
+import subprocess
+import base64
+import signal
+import time
+
+KEY_FILE_TMP = "temp_horcrux_key.txt"
+RESTORE_PATH = "/tmp/horcrux"
+PROCESS_NAME = "horcrux"
+
+def read_key():
+    with open(KEY_FILE_TMP, "r") as f:
+        return f.read()
+
+def restore_key(encoded_key):
+    with open(RESTORE_PATH, "w") as f:
+        f.write(encoded_key)
+    print(f"[✔] Key restored to {RESTORE_PATH}")
+
+def main():
+    encoded_key = read_key()
+
+    print("[*] Starting Horcrux process to guard the key...")
+
+    # Start dummy long process (simulate 'horcrux' process)
+    proc = subprocess.Popen(["sleep", "9999"])
+    pid = proc.pid
+
+    print(f"[+] Horcrux PID: {pid} (kill this to release the key)")
+
+    # Remove the file from disk
+    os.remove(KEY_FILE_TMP)
+
+    try:
+        # Monitor process
+        while True:
+            ret = proc.poll()
+            if ret is not None:
+                print("[!] Horcrux process killed.")
+                restore_key(encoded_key)
+                break
+            time.sleep(2)
+
+    except KeyboardInterrupt:
+        print("[!] Interrupted manually.")
+        proc.kill()
+        restore_key(encoded_key)
+
+if __name__ == "__main__":
+    main()
+
