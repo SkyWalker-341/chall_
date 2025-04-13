@@ -84,10 +84,10 @@ if __name__ == "__main__":
 
 ```
 import os
+import base64
 import random
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
-import base62  # Import the base62 library
 
 # === Step 0: Setup
 home_dir = "/home"
@@ -145,11 +145,20 @@ def rearrange_and_map(data: str):
 malware_code = "def horcrux(): pass  # hidden evil"
 rearranged, index_map = rearrange_and_map(malware_code)
 
-# === Base62 with the base62 library ===
-rearranged_b64 = base62.encodebytes(rearranged.encode())  # Use base62 encoding
-index_map_b62 = [base62.encode(i) for i in index_map]  # Map the indices to Base62
+base62_chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+def to_base62(num):
+    if num == 0:
+        return "0"
+    base62 = ""
+    while num:
+        base62 = base62_chars[num % 62] + base62
+        num //= 62
+    return base62
+
+rearranged_b64 = base64.b64encode(rearranged.encode()).decode()
+index_map_b62 = [to_base62(i) for i in index_map]
 
 print("\n== Final Horcrux Dump ==")
-print(f"Rearranged (Base62): {rearranged_b64}")
+print(f"Rearranged (Base64): {rearranged_b64}")
 print(f"Index Map (Base62): {index_map_b62}")
 ```
