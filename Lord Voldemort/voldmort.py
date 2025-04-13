@@ -199,19 +199,28 @@ if __name__ == "__main__":
     main()
 
 ### 3
-
 import random
 import base64
+import json
 
-def obfuscate_script(script_text):
-    chars = list(script_text)
+def obfuscate_code(input_file, output_file="obfuscated_payload.txt"):
+    with open(input_file, "r") as f:
+        code = f.read()
+
+    chars = list(code)
     indices = list(range(len(chars)))
     random.shuffle(indices)
 
-    shuffled = [chars[i] for i in indices]
-    shuffled_str = ''.join(shuffled)
+    shuffled = ''.join([chars[i] for i in indices])
+    index_map = indices
 
-    # Encode final payload in base64
-    encoded = base64.b64encode(shuffled_str.encode()).decode()
+    encoded = base64.b64encode(shuffled.encode()).decode()
 
-    return encoded, indices
+    with open(output_file, "w") as f:
+        json.dump({"encoded": encoded, "index_map": index_map}, f)
+
+    print(f"[+] Obfuscated code saved to '{output_file}'")
+
+# Example usage
+# obfuscate_code("malware.py")
+
