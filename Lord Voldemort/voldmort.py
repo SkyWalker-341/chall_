@@ -198,3 +198,20 @@ def main():
 if __name__ == "__main__":
     main()
 
+### 3
+
+import random
+import base64
+
+def obfuscate_script(script_text):
+    chars = list(script_text)
+    indices = list(range(len(chars)))
+    random.shuffle(indices)
+
+    shuffled = [chars[i] for i in indices]
+    shuffled_str = ''.join(shuffled)
+
+    # Encode final payload in base64
+    encoded = base64.b64encode(shuffled_str.encode()).decode()
+
+    return encoded, indices
