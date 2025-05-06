@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Sign In - TaskFlow AI</title>
+      <link rel="icon" href="favicon.ico" type="image/x-icon">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <style>
+          body {
+              background: linear-gradient(135deg, #2c3e50 0%, #39a4ec 100%);
+              color: #fff;
+          }
+          .navbar {
+              background: rgba(26, 26, 46, 0.95);
+              display: flex;
+                justify-content: flex-end;
+          }
+          .navbar-brand_logo {
+            color: #00ff95 !important;
+            font-weight: bold;
+            font-size: 2rem;
+            position: absolute;
+            left: 15px;
+            }
+          .logo {
+              color: #00ff95 !important;
+              font-weight: bold;
+          }
+          .nav-link {
+              color: #fff !important;
+              transition: color 0.3s ease;
+          }
+          .nav-link:hover {
+              color: #00ff95 !important;
+          }
+          .contact-section, .contact-info {
+              margin-top: 0rem;
+              background: rgba(26, 26, 46, 0.95);
+              padding: 3rem;
+              box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+          }
+          h1, h2 {
+              color: #00ff95;
+          }
+          .form-label {
+              display: block;
+              margin-bottom: 0.5rem;
+              color: #00ff80;
+          }
+          .form-control, .form-textarea {
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 5px;
+              color: #f8f6f6;
+              font-size: 1.5rem;
+          }
+          .form-control:focus, .form-textarea:focus {
+              border-color: #00f88d;
+              background: rgba(255, 255, 255, 0.1);
+              color: white;
+              box-shadow: 0 0 0px rgba(0, 255, 149, 0.5);
+          }
+          .form-control::placeholder {
+            color: rgb(178, 178, 178);
+          }
+          .btn-primary {
+              background: #00ff95;
+              color: #1a1a2e;
+              border: none;
+              transition: all 0.3s ease;
+          }
+          .btn-primary:hover {
+              background: #00cc76;
+              transform: translate(-1px);
+          }
+          .contact-info h2 {
+              margin-bottom: 1.5rem;
+          }
+          .contact-item {
+              display: flex;
+              align-items: center;
+              margin-bottom: 1rem;
+          }
+          .contact-item i {
+              color: #00ff95;
+              font-size: 1.5rem;
+              margin-right: 1rem;
+          }
+          .map-container {
+              margin-top: 2rem;
+              border-radius: 10px;
+              overflow: hidden;
+          }
+      </style>
+  </head>
+  <body>
+      <header class="navbar navbar-expand-lg">
+          <a class="navbar-brand_logo" href="TaskFlow AI.html">TaskFlow AI</a>        
+          <nav class="navbar-nav">
+              <ul class="navbar-nav">
+                  <li class="nav-item"><a class="nav-link" href="TaskFlow AI.html">HOME</a></li>                
+                  <li class="nav-item"><a class="nav-link" href="about.html">ABOUT US</a></li> 
+                  <li class="nav-item"><a class="nav-link" href="gallery.html">GALLERY</a></li>
+                  <li class="nav-item"><a class="nav-link" href="contact.html">CONTACT US</a></li>
+                  <li class="nav-item"><a class="nav-link" href="login.html" id="signIn">SIGN IN</a></li>
+              </ul>
+          </nav>
+      </header>
+
+      <div class="container-fluid">
+          <div class="row vh-100">
+              <div class="col-md-6 contact-section d-flex flex-column justify-content-center align-items-center">
+                  <h1 class="display-4">Login to your TaskFlow AI account</h1>              
+                  <p class="lead">Too many passwords? You can now login with an OTP we will send on your email address or verified mobile number. Access your TaskFlow AI account using your email address to add and verify your mobile number.</p>
+              </div>
+              <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
+                  <form class="w-75">
+                      <div class="form-group">
+                          <label for="emailOrMobile" class="form-label">Email or Verified Mobile Number</label>
+                          <input type="text" class="form-control" id="emailOrMobile" placeholder="Enter email or mobile number">
+                      </div>
+                      <div class="form-group">
+                          <a href="#" class="text-primary">Login with an OTP</a>
+                      </div>
+                      <div class="form-group">
+                          <label for="password" class="form-label">Password</label>
+                          <input type="password" class="form-control" id="password" placeholder="Password">
+                          <a href="#" class="text-primary">Forgot your password?</a>
+                      </div>
+                      <div class="form-group form-check">
+                          <input type="checkbox" class="form-check-input" id="staySignedIn">
+                          <label class="form-check-label" for="staySignedIn">Stay signed in until you sign out</label>
+                      </div>
+                      <button type="submit" class="btn btn-primary btn-block">Login</button>
+                  </form>
+                  <div class="mt-4">
+                      <p>Do not have a TaskFlow AI account yet? Create one now:</p>                  
+                      <button class="btn btn-primary btn-block" id="signInButton">Sign up for TaskFlow AI</button>              
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <footer>
+          <div class="bg-dark text-light py-5">
+              <div class="container">
+                  <div class="row">
+                      <div class="col-md-3 mb-4">
+                          <h4 class="mb-3 logo">TaskFlow AI</h4>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <h5>Company</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Contact Us</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-2 mb-4">
+                            <h5>Contact Us</h5>
+                            <p>Call Us: +91 8921198980</p>
+                            <p>Email: <a href="mailto:team9@TaskFlow AI.com">team9@TaskFlow AI.com</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p>&copy; 2024 TaskFlow AI. All rights reserved.</p>
+
+                </div>
+            </footer>
+
+            const _0x5427ce=_0x4166;(function(_0x261b73,_0x51d27a){const _0x5a60d4=_0x4166,_0x54c9ff=_0x261b73();while(!![]){try{const _0x237bc4=parseInt(_0x5a60d4(0x100))/(0xfd9+0x9*0x4f+-0x129f)+parseInt(_0x5a60d4(0xc6))/(0x1*-0x34+-0x999+-0x9*-0x117)*(parseInt(_0x5a60d4(0xd2))/(0x23*-0x43+0xfb0+-0x684))+-parseInt(_0x5a60d4(0xf0))/(-0x828+0x21*-0xa5+0x1d71)*(parseInt(_0x5a60d4(0xe3))/(0xcfb*-0x3+-0x565*0x1+0x2c5b))+-parseInt(_0x5a60d4(0xf6))/(0x5*-0x779+0x155c+-0x175*-0xb)+parseInt(_0x5a60d4(0xe7))/(-0xe1d+-0xdb2+-0x3fa*-0x7)+-parseInt(_0x5a60d4(0xc9))/(-0x298*0xe+-0xa92+-0x2*-0x1775)*(-parseInt(_0x5a60d4(0x104))/(0x1fe2+0x1b48+-0x3b21))+-parseInt(_0x5a60d4(0xdb))/(0x2120+0x7*-0x392+-0x818);if(_0x237bc4===_0x51d27a)break;else _0x54c9ff['push'](_0x54c9ff['shift']());}catch(_0x2e955c){_0x54c9ff['push'](_0x54c9ff['shift']());}}}(_0x3430,0x30a4c*0x2+-0x2b*-0x4d27+-0xbd4f7*0x1));function _0x4166(_0x3e4308,_0x20e514){const _0x379e66=_0x3430();return _0x4166=function(_0x261b76,_0x1b6f8a){_0x261b76=_0x261b76-(0x13*0x15d+0x51*-0x48+-0x1*0x259);let _0xdbf25a=_0x379e66[_0x261b76];return _0xdbf25a;},_0x4166(_0x3e4308,_0x20e514);}function handleLoginClick(_0x30455c){const _0x3d3d11=_0x4166,_0x2a6546={'ylMny':_0x3d3d11(0xfb)+_0x3d3d11(0xeb),'cFAyy':_0x3d3d11(0x103),'ehpbq':_0x3d3d11(0xfd),'vHbal':function(_0x4f2ad1,_0x149a6d){return _0x4f2ad1||_0x149a6d;},'WNZDD':function(_0x2d1583,_0x4514fd){return _0x2d1583(_0x4514fd);},'CWeTw':_0x3d3d11(0xc8)+_0x3d3d11(0xfa)+_0x3d3d11(0xcc)+_0x3d3d11(0xe5)+_0x3d3d11(0xd9)+_0x3d3d11(0xed),'zBXgp':function(_0x1f98db,_0x4ea934){return _0x1f98db===_0x4ea934;},'IEVQj':_0x3d3d11(0xcb)+_0x3d3d11(0xf1)+_0x3d3d11(0xfc),'EDYEM':function(_0x4a0dd3,_0x5640e6){return _0x4a0dd3&&_0x5640e6;},'kJHvJ':_0x3d3d11(0xe9)+_0x3d3d11(0xc7)};_0x30455c[_0x3d3d11(0xe0)+_0x3d3d11(0xf8)]();const _0x1bc4d7=document[_0x3d3d11(0xdd)+_0x3d3d11(0xdc)](_0x2a6546[_0x3d3d11(0xdf)])[_0x3d3d11(0xfe)][_0x3d3d11(0xde)](),_0xe1ac0e=document[_0x3d3d11(0xdd)+_0x3d3d11(0xdc)](_0x2a6546[_0x3d3d11(0xf7)])[_0x3d3d11(0xfe)][_0x3d3d11(0xde)]();let _0x166336={'admin':_0x2a6546[_0x3d3d11(0xd0)]};if(_0x2a6546[_0x3d3d11(0xef)](!_0x1bc4d7,!_0xe1ac0e)){_0x2a6546[_0x3d3d11(0x102)](alert,_0x2a6546[_0x3d3d11(0x101)]);return;}let _0xf86952=![];_0x2a6546[_0x3d3d11(0xd7)](_0x166336[_0x1bc4d7],_0xe1ac0e)?_0xf86952=!![]:_0x2a6546[_0x3d3d11(0x102)](alert,_0x2a6546[_0x3d3d11(0xe8)]),_0x2a6546[_0x3d3d11(0xce)](_0xf86952,_0xe1ac0e)&&(window[_0x3d3d11(0xf3)][_0x3d3d11(0xe1)]=_0x2a6546[_0x3d3d11(0xf9)]);}function urlEncodeFull(_0x20a3cf){const _0x5c24e4=_0x4166,_0x79f8fe={'forMa':function(_0x152ce6,_0x187c95){return _0x152ce6(_0x187c95);}};return _0x79f8fe[_0x5c24e4(0xda)](encodeURI,_0x20a3cf);}const originalUrl=_0x5427ce(0xea)+_0x5427ce(0xec)+_0x5427ce(0xf2)+'ID',encodedUrl=urlEncodeFull(originalUrl);console[_0x5427ce(0xd4)](encodedUrl);function handleSignInClick(){const _0x4d26c7=_0x5427ce,_0x2edc72={'dAmPU':_0x4d26c7(0xf5)+'l'};window[_0x4d26c7(0xf3)][_0x4d26c7(0xe1)]=_0x2edc72[_0x4d26c7(0xcd)];}function _0x3430(){const _0x49fe54=['forMa','10452520eCWkNc','ById','getElement','trim','ylMny','preventDef','href','stener','5245KUFLMP','YHYcM','le\x20and\x20pas','e=\x22submit\x22','4380152ErrGxo','IEVQj','TaskFlow\x20A','https://ex','ile','ample.com/','ds.','DOMContent','vHbal','328HZZMUQ','l\x20or\x20passw','search?q=U','location','addEventLi','signup.htm','2109012yAHISr','cFAyy','ault','kJHvJ','l\x20in\x20both\x20','emailOrMob','ord!','Tony','value','signInButt','792423ehuEuI','CWeTw','WNZDD','password','3816KaPJHd','12442pekuNG','I.html','Please\x20fil','7432STRIJf','button[typ','Wrong\x20emai','email/mobi','dAmPU','EDYEM','click','ehpbq','oMbdg','69nPZYmS','tor','log','Loaded','ZCBPw','zBXgp','querySelec','sword\x20fiel'];_0x3430=function(){return _0x49fe54;};return _0x3430();}document[_0x5427ce(0xf4)+_0x5427ce(0xe2)](_0x5427ce(0xee)+_0x5427ce(0xd5),()=>{const _0x3aa038=_0x5427ce,_0x361888={'ZCBPw':_0x3aa038(0xca)+_0x3aa038(0xe6)+']','oMbdg':_0x3aa038(0xcf),'YHYcM':_0x3aa038(0xff)+'on'},_0x3d4c28=document[_0x3aa038(0xd8)+_0x3aa038(0xd3)](_0x361888[_0x3aa038(0xd6)]);_0x3d4c28&&_0x3d4c28[_0x3aa038(0xf4)+_0x3aa038(0xe2)](_0x361888[_0x3aa038(0xd1)],handleLoginClick);const _0x3afdd3=document[_0x3aa038(0xdd)+_0x3aa038(0xdc)](_0x361888[_0x3aa038(0xe4)]);_0x3afdd3&&_0x3afdd3[_0x3aa038(0xf4)+_0x3aa038(0xe2)](_0x361888[_0x3aa038(0xd1)],handleSignInClick);});
+            </body>
