@@ -1,56 +1,52 @@
-# Rise of Ultron
+# Rise of Ultron (Revised Challenge Plan)
 
 ## Overview
 
-This challenge consists of multiple levels, each utilizing a different networking protocol or concept. Participants will progress through the levels by analyzing network data and solving puzzles embedded in traffic captures or interactions.
+This challenge consists of multiple levels, each utilizing a different networking protocol or concept. Participants will progress through the levels by analyzing network data and solving puzzles embedded in traffic captures or system interactions.
 
-## Challenge Theme
+## Revised Challenge Plan
 
-A hidden 8th level with the username **Watcher**.
+### Level 1: ICMP (Ping Protocol)
 
-The password for Watcher is a hash derived from the combination of two passwords from earlier levels (e.g., Level 2 and Level 6 passwords concatenated and hashed).
+- **Task:** The hidden flag is embedded within a series of IP addresses sent via ICMP packets.
+- **Hint:** The IP addresses contain noise (extra numerical values). Participants must filter and decode these values to reveal the flag.
 
-## Level Details
+### Level 2: HTTP Protocol
 
-### Level 1
+- **Task:** The flag is hidden as a username within a URL. However, the URL is encoded using a JavaScript obfuscation script.
+- **Hint:** Participants must reverse-engineer the obfuscated JavaScript code to extract the hidden username.
 
-- **Protocol:** ICMP
-- **Task:** Sending an individual ICMP packet for each character
+### Level 3: DNS Protocol
 
-### Level 2
+- **Task:** The flag describes the attack technique used to compromise the system.
+- **Hint:** The DNS header contains ASCII values representing the flag. These values must be extracted and base64-decoded to obtain the final text.
 
-- **Protocol:** FTP
-- **Task:** The file send througth FTP and flag is encrypted 
+### Level 4: Encrypted TCP
 
-### Level 3 
+- **Task:** This level contains **half** of the final password.
+- **Hint:** Participants must reverse an ELF binary to obtain the decryption key, then use it to decrypt the TCP traffic. The traffic contains the first half of the password.
 
-- **Protocol:** HTTP 
-- **Task:** The proper HTTP protocol format. In HTTP, a client sends a request to a server, and the server responds with a response
+### Final Level: SSH Access & Root Flag
 
-  
-### Level 4 (Hulk)
+- **Step 1:** Combine the first four flags (ICMP, HTTP, DNS, Encrypted TCP).
+- **Step 2:** Rearrange them randomly and generate a SHA-256 hash.
+- **Step 3:** Use the following credentials to initiate an SSH connection:
+  - **Username:** Extracted from Level 2 (HTTP)
+  - **Password:** Derived SHA-256 hash
+  - **IP Address:** Extracted from Level 1 (ICMP)
 
-- **Protocol:** SMTP
-- **Task:** This challenge involves creating and manipulating SMTP packets within a `.pcap` file, where packets can be "hidden" by altering their timestamps. Participants must reverse the timestamp modifications to uncover hidden messages.
+#### Objective:
+- SSH into the system using the credentials.
+- The final flag is stored in `flag.txt`, accessible only by the `root` user.
 
+### Additional Challenge: Flask Application Access
 
-### Level 5 (Thor)
+- **Complication:** The Flask application that reads the `flag.txt` file belongs to a different user group.
+- **Steps:**
+  1. Use private keys found in the system to log in as other users.
+  2. Modify user groups to grant the original user access to the Flask application's group.
+  3. Analyze the Flask code for vulnerabilities (e.g., improper validation).
+  4. Exploit the application to read `flag.txt` and retrieve the **final root flag**.
 
-- **Protocol:** DNS
-- **Task:** Participants analyze DNS traffic to find a clue or password embedded in DNS query or response packets.
-
-### Level 6 (Iron Man)
-
-- **Protocol:** SMB
-- **Task:** The SMB package are encrypted to decrypted the packages you need session ID and Session key but there are multip Session ID was there and SMB contains a pasword and a encrypted key-log file 
-
-### Level 7 (Captain America)
-
-- **Protocol:** Encrypted TCP (AES encryption)
-- **Task:** Analyze encrypted TCP traffic to decrypt the content using a key-log file which you uncover in SMB. the encryption tcp contains a encrypted password and a binary file. To get the original password reverse the binary file and get the password 
-
-### Final Level (Watcher - Level 8)
-
-- **Task:** Combine passwords from specific levels (e.g., Level 2 and Level 6).
-- **Hashing:** Concatenate the passwords, hash them using a specific algorithm (e.g., SHA-256), and use the hash as the password for the Watcher account (hashing format is iron-password_thor-password)only the password need to be hashing.
+---
 
